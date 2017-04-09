@@ -31,12 +31,14 @@ class rtree:
         x = 200
         y = 200
     class branch:
-        splits = 2
+        width = 3
+        splits = 3
         fruitfreq = 3
-        depth = 3
-        length = 30
-        range = 10
-        d_anglerange = 20
+        depth = 5
+        length = 40
+        range = 30
+        d_anglerange = 60
+        colours = {'apple':'green'}
     class trunk:
         segments = 2
         class length:
@@ -53,14 +55,21 @@ class rtree:
         import random
         if not self._ready:
             raise Exception('Need to construct module')
-        def sub_iter_render(self, angle, module, random):
-            angle += random.randint(0 - (module.branch.d_anglerange / 2), module.branch.d_anglerange / 2)
-            length = module.branch.length + random.randint(0 - (module.brange.range / 2), module.branch.range / 2)
-            for i in module.splits:
-                self(self, angle, module, random)
-        sub_iter_render(sub_iter_render, 0, self, random)
-    def _calculate(start_x, start_y, angle, length):
+        def sub_iter_render(self, angle, module, random, x, y, depth):
+            nangle = angle + random.randint(0 - (module.branch.d_anglerange / 2), module.branch.d_anglerange / 2)
+            nlength = module.branch.length + random.randint(0 - (module.branch.range / 2), module.branch.range / 2)
+            end_x, end_y = module._calculate(x, y, nangle, nlength)
+            module.canvas.create_line(x, y, end_x, end_y, fill=module.branch.colours[module.species], width=module.branch.width)
+            if depth < module.branch.depth:
+                for i in range(module.branch.splits):
+                    self(self, nangle, module, random, end_x, end_y, depth + 1)
+        sub_iter_render(sub_iter_render, 270, self, random, self.coords.x, self.coords.y, 0)
+    def _calculate(self, start_x, start_y, angle, length):
         import math
-        d_x = math.cos(math.radians(angle)) / length
-        d_y = pow(pow(length, 2) - pow(d_x, 2), 1/2)
+        d_x = math.cos(math.radians(angle)) * length
+        d_y = math.sqrt(pow(length, 2) - pow(d_x, 2))
+        if 90 < angle < 270:
+            d_x = 0 - d_x
+        if 180 < angle < 360:
+            d_y = 0 - d_y
         return start_x + d_x, start_y + d_y
