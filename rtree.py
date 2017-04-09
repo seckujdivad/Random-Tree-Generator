@@ -1,6 +1,10 @@
 class rtree:
     def __init__(self, canvas, splits=None, fruitfreq=None, species=None, x=None, y=None):
         #check data
+        import tkinter
+        self.canvas = canvas
+        if type(self.canvas) != tkinter.Canvas:
+            raise Exception('Provide a valid tkinter Canvas object')
         if splits != None:
             self.splits = splits
         if fruitfreq != None:
@@ -21,7 +25,6 @@ class rtree:
             raise TypeError('x must be an integer')
         if type(self.coords.y) != int:
             raise TypeError('y must be an integer')
-        self.canvas = canvas
         self._ready = True
     _ready = False #has been constructed
     class coords:
