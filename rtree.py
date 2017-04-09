@@ -54,7 +54,13 @@ class rtree:
         if not self._ready:
             raise Exception('Need to construct module')
         def sub_iter_render(self, angle, module, random):
-            angle += random.randint(0 - (module.branch.d_anglerange / 2), module.d_anglerange / 2)
+            angle += random.randint(0 - (module.branch.d_anglerange / 2), module.branch.d_anglerange / 2)
+            length = module.branch.length + random.randint(0 - (module.brange.range / 2), module.branch.range / 2)
             for i in module.splits:
                 self(self, angle, module, random)
         sub_iter_render(sub_iter_render, 0, self, random)
+    def _calculate(start_x, start_y, angle, length):
+        import math
+        d_x = math.cos(math.radians(angle)) / length
+        d_y = pow(pow(length, 2) - pow(d_x, 2), 1/2)
+        return start_x + d_x, start_y + d_y
