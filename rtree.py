@@ -6,9 +6,9 @@ class rtree:
         if type(self.canvas) != tkinter.Canvas:
             raise Exception('Provide a valid tkinter Canvas object')
         if splits != None:
-            self.splits = splits
+            self.branch.splits = splits
         if fruitfreq != None:
-            self.fruitfreq = fruitfreq
+            self.branch.fruitfreq = fruitfreq
         if species != None:
             self.species = species
         if x != None:
@@ -17,9 +17,9 @@ class rtree:
             self.coords.y = y
         if self.species not in self.species_list:
             raise ValueError('Species "' + str(self.species) + '" is not in the list of species')
-        if type(self.splits) != int or self.splits < 1: #if not an integer, the "or" statement will escape and will not perform the second piece of logic unless "splits" is an integer
+        if type(self.branch.splits) != int or self.branch.splits < 1: #if not an integer, the "or" statement will escape and will not perform the second piece of logic unless "splits" is an integer
             raise TypeError('splits must be an integer greater than 0')
-        if self.fruitfreq == True or (type(self.fruitfreq) != int and type(self.fruitfreq) != bool) or self.fruitfreq < 1:
+        if self.branch.fruitfreq == True or (type(self.branch.fruitfreq) != int and type(self.branch.fruitfreq) != bool) or self.branch.fruitfreq < 1:
             raise TypeError('fruitfreq must be an integer greater than 0 or False')
         if type(self.coords.x) != int:
             raise TypeError('x must be an integer')
@@ -30,8 +30,18 @@ class rtree:
     class coords:
         x = 200
         y = 200
-    splits = 2
-    fruitfreq = 3
+    class branch:
+        splits = 2
+        fruitfreq = 3
+        depth = 3
+        length = 30
+        range = 10
+        d_anglerange = 20
+    class trunk:
+        segments = 2
+        class length:
+            length = 40
+            range = 10
     species = 'apple'
     species_list = ['apple']
     class fruits:
@@ -40,6 +50,11 @@ class rtree:
             size = 15
     fruits.fruits = {'apple':fruits.apple}
     def render(self):
+        import random
         if not self._ready:
             raise Exception('Need to construct module')
-        
+        def sub_iter_render(self, angle, module, random):
+            angle += random.randint(0 - (module.branch.d_anglerange / 2), module.d_anglerange / 2)
+            for i in module.splits:
+                self(self, angle, module, random)
+        sub_iter_render(sub_iter_render, 0, self, random)
